@@ -32,7 +32,7 @@ class UserGroup extends Model
             if ($user) {
                 LogSystemHelpers::createLog(
                     'User Group',
-                    'create',
+                    'store',
                     $model->id,
                     $model->toArray(),
                     $user
@@ -66,7 +66,7 @@ class UserGroup extends Model
             if ($user) {
                 LogSystemHelpers::createLog(
                     'User Group',
-                    'delete',
+                    'destroy',
                     $model->id,
                     $model->toArray(),
                     $user

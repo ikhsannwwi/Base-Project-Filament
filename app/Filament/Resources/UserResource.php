@@ -36,7 +36,7 @@ class UserResource extends Resource
                                             UserGroup::all()->pluck('name', 'id')->toArray()
                                         )
                                         ->searchable()
-                                        ->required(),
+                                        ->required(fn () => auth()->user()->user_group_id !== 0),
                 Forms\Components\TextInput::make('name')
                                             ->required()
                                             ->label('Full Name')
@@ -54,7 +54,8 @@ class UserResource extends Resource
                                             ->label('Password')
                                             ->placeholder('Enter a secure password')
                                             ->dehydrated(fn ($state) => filled($state)) 
-                                            ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
+                                            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                            ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord),
                 Forms\Components\Toggle::make('status')
                                         ->label('Active')
                                         ->inline(false)
@@ -65,6 +66,20 @@ class UserResource extends Resource
             ]);
     }
 
+    protected function handleRecordCreation(array $data): void
+    {
+        $user = $this->getRecord();
+
+        $user->fill([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'user_group_id' => $data['user_group_id'] ?? 0,
+            'user' => $data['password'],
+        ]);
+
+        $user->save();
+    }
+
     protected function handleRecordUpdate(array $data): void
     {
         $user = $this->getRecord();
@@ -72,7 +87,7 @@ class UserResource extends Resource
         $user->fill([
             'name' => $data['name'],
             'email' => $data['email'],
-            'user_group_id' => $data['user_group_id'],
+            'user_group_id' => $data['user_group_id'] ?? 0,
         ]);
 
         if (!empty($data['password'])) {

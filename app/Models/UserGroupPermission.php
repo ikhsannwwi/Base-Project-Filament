@@ -21,7 +21,7 @@ class UserGroupPermission extends Model
             if ($user) {
                 LogSystemHelpers::createLog(
                     'User Group Permission',
-                    'create',
+                    'store',
                     $model->id,
                     $model->toArray(),
                     $user
@@ -37,7 +37,7 @@ class UserGroupPermission extends Model
             if ($user) {
                 LogSystemHelpers::createLog(
                     'User Group Permission',
-                    'delete',
+                    'destroy',
                     $model->id,
                     $model->toArray(),
                     $user

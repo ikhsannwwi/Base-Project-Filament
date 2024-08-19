@@ -26,7 +26,7 @@ class AdminMenu extends Model
             if ($user) {
                 LogSystemHelpers::createLog(
                     'Admin Menu',
-                    'create',
+                    'store',
                     $model->id,
                     $model->toArray(),
                     $user
@@ -62,7 +62,7 @@ class AdminMenu extends Model
             if ($user) {
                 LogSystemHelpers::createLog(
                     'Admin Menu',
-                    'delete',
+                    'destroy',
                     $model->id,
                     $model->toArray(),
                     $user

@@ -34,6 +34,8 @@ class MakeModuleFilament extends Command
     public function handle()
     {
         $name = $this->argument('name');
+
+        $name = str_replace(' ', '', $name);
         
         Artisan::call('make:filament-resource', ['name' => $name]);
         
@@ -61,6 +63,7 @@ class MakeModuleFilament extends Command
 
     protected function copyAndModifyPolicyFile($name)
     {
+        $name_ori = $name;
         $name = str_replace(' ', '', $name);
         $templatePath = app_path('Policies/TemplatePolicy.php');
         $newPolicyPath = app_path("Policies/{$name}Policy.php");
@@ -80,7 +83,7 @@ class MakeModuleFilament extends Command
         $replacements = [
             'TemplatePolicy' => "{$name}Policy",
             'Template' => $name,
-            "AdminMenu::where('name', 'Template')" => "AdminMenu::where('name', '{$name}')",
+            "AdminMenu::where('name', 'ModelAdminMenu')" => "AdminMenu::where('name', '{$name_ori}')",
         ];
 
         $newContent = str_replace(array_keys($replacements), array_values($replacements), $content);

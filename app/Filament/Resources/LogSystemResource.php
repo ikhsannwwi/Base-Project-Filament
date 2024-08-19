@@ -67,11 +67,15 @@ class LogSystemResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    // Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->bulkActions(
+                auth()->user()->user_group_id === 0 
+                    ? [
+                        Tables\Actions\BulkActionGroup::make([
+                            Tables\Actions\DeleteBulkAction::make(),
+                        ]),
+                    ] 
+                    : []
+            );
     }
 
     public static function getRelations(): array

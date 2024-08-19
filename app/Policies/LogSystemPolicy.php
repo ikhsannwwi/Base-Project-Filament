@@ -10,7 +10,7 @@ use Illuminate\Auth\Access\Response;
 class LogSystemPolicy
 {
     protected function userMenuId(){
-        $menu = AdminMenu::where('name', 'LogSystem')->first();
+        $menu = AdminMenu::where('name', 'Log System')->first();
         return $menu ? $menu->id : null;
     }
     /**

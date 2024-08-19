@@ -4,12 +4,13 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\AdminMenu;
+use App\Models\Template;
 use Illuminate\Auth\Access\Response;
 
 class TemplatePolicy
 {
     protected function userMenuId(){
-        $menu = AdminMenu::where('name', 'Template')->first();
+        $menu = AdminMenu::where('name', 'ModelAdminMenu')->first();
         return $menu ? $menu->id : null;
     }
     /**

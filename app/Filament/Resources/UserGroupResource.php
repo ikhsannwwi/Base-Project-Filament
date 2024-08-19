@@ -30,7 +30,7 @@ class UserGroupResource extends Resource
         $adminMenus = AdminMenu::all();
         $userGroup = $form->model;
 
-        $permissions = $userGroup !== "App\Models\UserGroup"
+        $permissions = $userGroup instanceof \App\Models\UserGroup
             ? UserGroupPermission::where('user_group_id', $userGroup->id)->get()->keyBy('admin_menu_id')
             : collect();
             // dd($permissions->get(5));
@@ -52,6 +52,7 @@ class UserGroupResource extends Resource
                         'edit' => 'Edit',
                         'destroy' => 'Destroy',
                     ])
+                    ->default($permission ? $permission->only(['index', 'view', 'create', 'edit', 'destroy']) : []),
             ]);
         }
 

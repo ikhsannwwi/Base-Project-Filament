@@ -70,7 +70,7 @@ class User extends Authenticatable
             if ($user) {
                 LogSystemHelpers::createLog(
                     'User',
-                    'create',
+                    'store',
                     $model->id,
                     $model->toArray(),
                     $user
@@ -102,7 +102,7 @@ class User extends Authenticatable
             if ($user) {
                 LogSystemHelpers::createLog(
                     'User',
-                    'delete',
+                    'destroy',
                     $model->id,
                     $model->toArray(),
                     $user
