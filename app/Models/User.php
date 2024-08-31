@@ -7,11 +7,13 @@ use App\Models\UserGroup;
 use App\Helpers\LogSystemHelpers;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -26,6 +28,8 @@ class User extends Authenticatable
         'password',
         'user_group_id',
         'status',
+        'avatar_url',
+        'custom_fields',
     ];
 
     /**
@@ -60,6 +64,11 @@ class User extends Authenticatable
         ];
 
         return $data;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url ? Storage::url("$this->avatar_url") : null;
     }
 
     protected static function booted()

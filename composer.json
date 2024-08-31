@@ -11,6 +11,7 @@
         "guava/filament-icon-picker": "^2.2",
         "guzzlehttp/guzzle": "^7.2",
         "jenssegers/agent": "*",
+        "joaopaulolndev/filament-edit-profile": "^1.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
@@ -42,10 +43,14 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "php artisan migrate:fresh --seed --force"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade"
+            "@php artisan filament:upgrade",
+            "@php artisan app:update-logo-filament"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
