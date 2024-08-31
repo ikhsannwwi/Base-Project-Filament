@@ -2,21 +2,23 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
+use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Outerweb\Settings\Models\Setting;
+use Filament\Http\Middleware\Authenticate;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Outerweb\FilamentSettings\Filament\Plugins\FilamentSettingsPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,16 +32,16 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
             ->colors([
-                'danger' => Color::Rose,
-                'gray' => Color::Gray,
-                'info' => Color::Blue,
-                'primary' => Color::Indigo,
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
+                'danger' => Setting::get('general.color.danger') ?? Color::Rose,
+                'gray' => Setting::get('general.color.gray') ?? Color::Gray,
+                'info' => Setting::get('general.color.info') ?? Color::Blue,
+                'primary' => Setting::get('general.color.primary') ?? Color::Indigo,
+                'success' => Setting::get('general.color.success') ?? Color::Emerald,
+                'warning' => Setting::get('general.color.warning') ?? Color::Orange,
             ])
-            ->brandName('Base Projects')
-            ->favicon(asset('images/logo.svg'))
-            // ->brandLogo(asset('images/logo.svg'))
+            ->brandName(Setting::get('general.brand_name') ?? 'Base Project')
+            ->favicon(asset('storage/' . Setting::get('general.media.favicon')))
+            ->brandLogo(asset('storage/' . Setting::get('general.media.logo')))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -63,6 +65,11 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('web')
             ->authMiddleware([
                 Authenticate::class,
+            ])->plugins([
+                FilamentSettingsPlugin::make()
+                    ->pages([
+                        \App\Filament\Pages\Settings::class,
+                    ])
             ]);
     }
 }

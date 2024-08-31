@@ -12,10 +12,10 @@ class LogSystemHelpers
     /**
      * Check if the user has the specified permission for the given menu ID.
      */
-    public static function createLog($module, $action, $data_id, $data, User $user = null): void
+    public static function createLog($module, $action, $data_id, $data): void
     {
         $log['ip_address'] = request()->ip();
-        $log['user_id'] = $user->id;
+        $log['user_id'] = auth()->user()->id;
 
         $agent = new Agent();
         $log['device'] = $agent->device();

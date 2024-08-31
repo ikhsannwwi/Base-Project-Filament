@@ -21,7 +21,7 @@ class AdminMenuResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-c-bars-4';
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'Setting Managements';
 
     protected static $module = 'Admin Menu';
 
