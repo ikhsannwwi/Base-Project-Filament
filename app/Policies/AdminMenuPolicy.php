@@ -26,18 +26,18 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
         // $key_permission = 0;
-        // foreach ($user->usergroup->permissions as $key => $value) {
+        // foreach ($user->usergroup->UserGroupPermission as $key => $value) {
         //     if ($value->admin_menu_id === $adminMenuId) {
         //         $key_permission += $key;
         //         break;
         //     }
         // }
-        // $hasPermission = $user->usergroup->permissions[$key_permission]->index;
+        // $hasPermission = $user->usergroup->UserGroupPermission[$key_permission]->index;
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->index;
         });
 
@@ -58,9 +58,9 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->view;
         });
 
@@ -81,9 +81,9 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->create;
         });
 
@@ -104,9 +104,9 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->edit;
         });
 
@@ -127,9 +127,9 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->destroy;
         });
 
@@ -150,9 +150,9 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->restore;
         });
 
@@ -173,9 +173,9 @@ class AdminMenuPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->force_delete;
         });
 

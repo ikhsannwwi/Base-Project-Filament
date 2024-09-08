@@ -27,9 +27,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->index;
         });
 
@@ -50,9 +50,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->view;
         });
 
@@ -73,9 +73,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->create;
         });
 
@@ -96,9 +96,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->edit;
         });
 
@@ -119,9 +119,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->destroy;
         });
 
@@ -142,9 +142,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->restore;
         });
 
@@ -165,9 +165,9 @@ class LogSystemPolicy
             return false;
         }
 
-        $user->load('usergroup.permissions');
+        $user->load('usergroup.UserGroupPermission');
 
-        $hasPermission = $user->usergroup->permissions->contains(function ($permission) use ($adminMenuId) {
+        $hasPermission = $user->usergroup->UserGroupPermission->contains(function ($permission) use ($adminMenuId) {
             return $permission->admin_menu_id === $adminMenuId && $permission->force_delete;
         });
 

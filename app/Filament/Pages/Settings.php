@@ -63,15 +63,20 @@ class Settings extends BaseSettings
                                         ColorPicker::make('general.color.warning'),
                                     ])
                                 ]),
-                            FileUpload::make('general.media.favicon')
-                                ->image()
-                                ->directory('administrator/assets/media/settings')
-                                ->imageResizeMode('cover')
-                                ->imageCropAspectRatio('1:1'),
-                            FileUpload::make('general.media.logo')
-                                ->image()
-                                ->directory('administrator/assets/media/settings')
-                                ->imageResizeMode('cover')
+                                Grid::make(2)
+                                        ->schema([
+                                    FileUpload::make('general.media.favicon')
+                                        ->image()
+                                        ->directory('administrator/assets/media/settings')
+                                        ->imageResizeMode('cover')
+                                        ->imageCropAspectRatio('1:1')
+                                        ->columnSpan(1),
+                                    FileUpload::make('general.media.logo')
+                                        ->image()
+                                        ->directory('administrator/assets/media/settings')
+                                        ->imageResizeMode('cover')
+                                        ->columnSpan(1),
+                                ]),
                         ]),
                     Tabs\Tab::make('SMTP')
                         ->schema([

@@ -13,19 +13,6 @@ class SettingSeeder extends Seeder
      */
     public function run(): void
     {
-        Setting::updateOrCreate(
-            ['name' => 'favicon'],
-            ['value' => '']
-        );
         
-        Setting::updateOrCreate(
-            ['name' => 'logo_image'],
-            ['value' => '']
-        );
-        
-        Setting::updateOrCreate(
-            ['name' => 'project_name'],
-            ['value' => '']
-        );
     }
 }
