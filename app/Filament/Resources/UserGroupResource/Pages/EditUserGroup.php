@@ -23,17 +23,4 @@ class EditUserGroup extends EditRecord
 
         $userGroup->delete();
     }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $userGroup = $this->record;
-        $userGroup->update([
-            'name' => $data['name'],
-            'status' => $data['status'],
-        ]);
-
-        UserGroupResource::savePermissions($userGroup, $data['permissions']);
-
-        return $data;
-    }
 }

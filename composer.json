@@ -34,7 +34,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/LogSystemHelpers.php"
+            "app/Helpers/LogSystemHelpers.php",
+            "app/Helpers/Helpers.php"
         ]
     },
     "autoload-dev": {
@@ -43,8 +44,9 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "php artisan migrate:fresh --seed --force"
+        "install-with-migrate": [
+            "composer install",
+            "@php artisan migrate --seed --force"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

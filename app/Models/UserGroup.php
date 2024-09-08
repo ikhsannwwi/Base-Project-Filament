@@ -19,14 +19,14 @@ class UserGroup extends Model
         parent::boot();
 
         static::deleting(function (UserGroup $userGroup) {
-            $userGroup->permissions()->delete();
+            $userGroup->UserGroupPermission()->delete();
         });
     }
 
     protected static function booted()
     {
         static::created(function ($model) {
-            $model->load('permissions');
+            $model->load('UserGroupPermission');
             $user = Auth::user();
 
             if ($user) {
@@ -43,7 +43,7 @@ class UserGroup extends Model
         });
 
         static::updated(function ($model) {
-            $model->load('permissions');
+            $model->load('UserGroupPermission');
             $user = Auth::user();
 
             if ($user) {
@@ -60,7 +60,7 @@ class UserGroup extends Model
         });
 
         static::deleted(function ($model) {
-            $model->load('permissions');
+            $model->load('UserGroupPermission');
             $user = Auth::user();
 
             if ($user) {
@@ -77,7 +77,7 @@ class UserGroup extends Model
         });
     }
 
-    public function permissions()
+    public function UserGroupPermission()
     {
         return $this->hasMany(UserGroupPermission::class);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -10,7 +11,17 @@ use App\Models\UserGroup;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use App\Models\UserGroupPermission;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Actions\Action;
 use App\Filament\Resources\UserGroupResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserGroupResource\RelationManagers;
@@ -27,71 +38,97 @@ class UserGroupResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $adminMenus = AdminMenu::all();
-        $userGroup = $form->model;
-
-        $permissions = $userGroup instanceof \App\Models\UserGroup
-            ? UserGroupPermission::where('user_group_id', $userGroup->id)->get()->keyBy('admin_menu_id')
-            : collect();
-            // dd($permissions->get(5));
-
-        $checkboxSchemas = [];
-        foreach ($adminMenus as $menu) {
-            $permission = $permissions->get($menu->id);
-
-            $checkboxSchemas[] = Forms\Components\Fieldset::make($menu->name)
-            ->schema([
-                Forms\Components\CheckboxList::make("permissions.{$menu->id}")
-                    ->label('')
-                    ->columns(2)
-                    ->bulkToggleable()
-                    ->options([
-                        'index' => 'index',
-                        'view' => 'view',
-                        'create' => 'Create',
-                        'edit' => 'Edit',
-                        'destroy' => 'Destroy',
-                    ])
-                    ->default($permission ? $permission->only(['index', 'view', 'create', 'edit', 'destroy']) : []),
-            ]);
-        }
-
         return $form
-            ->schema(array_merge([
-                Forms\Components\TextInput::make('name')
-                                            ->required()
-                                            ->label('Name')
-                                            ->placeholder('Enter name menu')
-                                            ->maxLength(255),
-                Forms\Components\Toggle::make('status')
-                                        ->label('Active')
-                                        ->inline(false)
-                                        ->onColor('success')
-                                        ->offColor('danger')
-                                        ->default(true)
-                                        ->helperText('Toggle to activate or deactivate'),
-            ], $checkboxSchemas));
-    }
+            ->schema([
+                Grid::make(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Name')
+                            ->placeholder('Enter name menu')
+                            ->maxLength(255)
+                            ->required()
+                            ->columnSpan(2),
 
-    public static function savePermissions(UserGroup $userGroup, array $permissions): void
-    {
-        foreach ($permissions as $menuId => $actions) {
-            try {
-                UserGroupPermission::where('user_group_id', $userGroup->id)->updateOrCreate(
-                    ['admin_menu_id' => $menuId],
-                    [
-                        'user_group_id' => $userGroup->id,
-                        'index' => isset($actions[0]) ? 1 : 0,
-                        'view' => isset($actions[1]) ? 1 : 0,
-                        'create' => isset($actions[2]) ? 1 : 0,
-                        'edit' => isset($actions[3]) ? 1 : 0,
-                        'destroy' => isset($actions[4]) ? 1 : 0,
-                    ]
-                );
-            } catch (\Exception $e) {
-                \Log::error('Failed to save permissions', ['error' => $e->getMessage(), 'menu_id' => $menuId]);
-            }
-        }
+                        Toggle::make('status')
+                            ->label('Active')
+                            ->inline(false)
+                            ->onColor('success')
+                            ->offColor('danger')
+                            ->default(true)
+                            ->helperText('Toggle to activate or deactivate')
+                            ->columnSpan(1),
+                    ]),
+
+                    Repeater::make('UserGroupPermission')
+                        ->relationship()
+                        ->schema([
+                            Grid::make(2)
+                                ->schema([
+                                    Select::make('admin_menu_id')
+                                        ->label('Admin Menu')
+                                        ->options(function (UserGroup $usergroup) {
+                                            $usedMenuIds = $usergroup->load('UserGroupPermission')->UserGroupPermission->pluck('admin_menu_id')->toArray();
+                                            $admin_menu = AdminMenu::whereNotIn('id', $usedMenuIds)->pluck('name', 'id')->toArray();
+                                            return $admin_menu;
+                                        })
+                                        ->suffixIcon('heroicon-c-bars-4')
+                                        ->searchable()
+                                        ->required()
+                                        ->columnSpan(1),
+
+                                    Grid::make(5)
+                                        ->schema([
+                                            Checkbox::make('index')->label('Index')->default(true),
+                                            Checkbox::make('create')->label('Create')->default(true),
+                                            Checkbox::make('edit')->label('Edit')->default(true),
+                                            Checkbox::make('destroy')->label('Destroy')->default(true),
+                                            Checkbox::make('view')->label('View')->default(true),
+                                        ]),
+                                ])
+                        ])
+                        ->deleteAction(
+                            function (Action $action) {
+                                return $action
+                                    ->requiresConfirmation()
+                                    ->modalDescription('Are you sure you\'d like to delete this item? This cannot be undone.')
+                                    ->after(function ($state, array $arguments) {
+                                        $id = str_replace('record-', '', $arguments['item']);
+                                        UserGroupPermission::destroy($id);
+                                        Notification::make()
+                                                 ->success()
+                                                 ->title('Permission Deleted')
+                                                 ->body('The permission has been permanently deleted.')
+                                                 ->send();
+                                    });
+                            }
+                        )
+                        ->addAction(
+                            function (Action $action) {
+                                return $action
+                                    ->after(function ($state, array $arguments, UserGroup $usergroup) {
+                                        // $usedMenuIds = $usergroup->load('UserGroupPermission')->UserGroupPermission->pluck('admin_menu_id')->toArray();
+                                        // $admin_menu = AdminMenu::whereNotIn('id', $usedMenuIds)->first();
+                                        // $data = [
+                                        //     'user_group_id' => $usergroup->id,
+                                        //     'admin_menu_id' => $admin_menu->id,
+                                        //     'index' => true,
+                                        //     'create' => true,
+                                        //     'edit' => true,
+                                        //     'destroy' => true,
+                                        //     'view' => true,
+                                        // ];
+                                        // UserGroupPermission::create($data);
+                                        Notification::make()
+                                                 ->success()
+                                                 ->title('Permission Added')
+                                                 ->body('A new permission has been added successfully.')
+                                                 ->send();
+                                    });
+                            }
+                        )
+                        ->defaultItems(1)
+                        ->columnSpan('full'),
+            ]);
     }
 
     public static function table(Table $table): Table
